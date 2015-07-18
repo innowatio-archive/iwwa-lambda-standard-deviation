@@ -19,12 +19,12 @@ source code on file save.
 The following environment variables have to be specified in the Travis project
 settings:
 
-- `ARTIFACTS_KEY`: AWS access key id
-- `ARTIFACTS_SECRET`: AWS secret access key
-- `ARTIFACTS_BUCKET`: S3 bucket name
-- `ARTIFACTS_S3_REGION`: region of the S3 bucket
-- `ARTIFACTS_TARGET_PATHS`: target folder(s)
-- `FUNCTION_NAME`: lambda function name
+- `AWS_ACCESS_KEY_ID`
+- `AWS_DEFAULT_REGION`
+- `AWS_SECRET_ACCESS_KEY`
+- `LAMBDA_ROLE`: IAM role to give the lambda function
+- `LAMBDA_NAME`: lambda function name
+- `S3_BUCKET`
 
 **WARNING**: the value of those variables **must** be kept secret. **Do not**
 set them in the `.travis.yml` config file, only in the Travis project's
@@ -36,6 +36,8 @@ Travis workflow:
 - lint source code
 - build project into zip bundle
 - upload bundle to S3
+- create/update the lambda function
 
-Once artifacts have been uploaded, one has to manually update the lambda
-function with the desired bundle.
+If the lambda function does not exist, the script creates it. However, it does
+not configure event sources and other parameters. Manual intervention is
+therefore required.

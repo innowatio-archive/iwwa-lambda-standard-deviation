@@ -37,7 +37,7 @@
   "scripts": {
     "test": "gulp test",
     "lint": "gulp lint",
-    "build": "gulp build",
+    "deploy": "gulp deploy",
     "dev": "gulp"
   },
   "author": "Team Wattellina <wattellina@mondora.com>",
