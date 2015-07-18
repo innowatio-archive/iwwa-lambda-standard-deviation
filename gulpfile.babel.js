@@ -7,7 +7,7 @@ import zip from "gulp-zip";
 import proGulp from "pro-gulp";
 
 var FUNCTION_NAME = process.env.FUNCTION_NAME;
-var DESCRIPTION = execSync("git describe");
+var DESCRIPTION = execSync("git describe").toString("utf8").trim();
 
 var bundleName = [FUNCTION_NAME, DESCRIPTION, "bundle.zip"].join("-");
 
@@ -18,9 +18,9 @@ proGulp.task("compile", function () {
 });
 
 proGulp.task("install", function () {
-    execSync("cp package.json build/" + DESCRIPTION + "/");
+    execSync("cp package.json build/" + DESCRIPTION + "/package.json");
     execSync("npm install --production", {
-        cwd: "build/" + DESCRIPTION
+        cwd: "build/" + DESCRIPTION + "/"
     });
 });
 
@@ -31,7 +31,7 @@ proGulp.task("bundle", function () {
 });
 
 proGulp.task("clean", function () {
-    execSync("rm -r build/" + DESCRIPTION);
+    execSync("rm -r build/" + DESCRIPTION + "/");
 });
 
 gulp.task("build", proGulp.sequence(["compile", "install", "bundle", "clean"]));
