@@ -17,6 +17,7 @@ function getOutput (command) {
     }
 }
 
+var AWS_DEFAULT_REGION = process.env.AWS_DEFAULT_REGION;
 var CURRENT_BRANCH = getOutput("git rev-parse --abbrev-ref HEAD");
 var CURRENT_COMMIT = getOutput("git rev-parse --short HEAD");
 var CURRENT_TAG = getOutput("git describe --exact-match HEAD");
@@ -53,7 +54,10 @@ proGulp.task("bundle", function () {
 });
 
 proGulp.task("uploadToS3", function () {
-    var s3 = new S3({apiVersion: "2006-03-01"});
+    var s3 = new S3({
+        apiVersion: "2006-03-01",
+        region: AWS_DEFAULT_REGION
+    });
     var params = {
         Bucket: S3_BUCKET,
         Key: BUNDLE_NAME,
@@ -63,7 +67,10 @@ proGulp.task("uploadToS3", function () {
 });
 
 proGulp.task("updateLambda", function () {
-    var lambda = new Lambda({apiVersion: "2015-03-31"});
+    var lambda = new Lambda({
+        apiVersion: "2015-03-31",
+        region: AWS_DEFAULT_REGION
+    });
     var createParams = {
       Code: {
         S3Bucket: S3_BUCKET,
