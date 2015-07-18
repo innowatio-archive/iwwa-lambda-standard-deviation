@@ -1,0 +1,41 @@
+{
+  "name": "iwwa-lambda-standard-deviation",
+  "functionName": "standardDeviation",
+  "version": "1.0.0",
+  "description": "Standard deviation lambda",
+  "main": "src/index.js",
+  "dependencies": {
+    "aws-sdk": "^2.1.39",
+    "bluebird": "^2.9.34",
+    "moment": "^2.10.3",
+    "ramda": "^0.16.0",
+    "simple-statistics": "simple-statistics/simple-statistics"
+  },
+  "devDependencies": {
+    "babel": "^5.6.23",
+    "babel-core": "^5.7.4",
+    "babel-plugin-rewire": "^0.1.7",
+    "chai": "^3.1.0",
+    "chai-as-promised": "^5.1.0",
+    "coveralls": "^2.11.2",
+    "eslint": "^0.24.1",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.1.0",
+    "gulp-eslint": "^0.15.0",
+    "gulp-spawn-mocha": "^2.2.1",
+    "gulp-zip": "^3.0.2",
+    "istanbul": "^0.3.17",
+    "mocha": "^2.2.5",
+    "pro-gulp": "^0.3.0",
+    "sinon": "^1.15.4",
+    "sinon-chai": "^2.8.0"
+  },
+  "scripts": {
+    "test": "gulp test",
+    "lint": "gulp lint",
+    "build": "gulp build",
+    "dev": "gulp"
+  },
+  "author": "Team Wattellina <wattellina@mondora.com>",
+  "license": "Apache-2.0"
+}
