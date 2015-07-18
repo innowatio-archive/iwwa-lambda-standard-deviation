@@ -9,8 +9,8 @@ import zip from "gulp-zip";
 import proGulp from "pro-gulp";
 import {Lambda, S3} from "aws-sdk";
 
-promisifyAll(Lambda);
-promisifyAll(S3);
+promisifyAll(Lambda, {suffix: "Promise"});
+promisifyAll(S3, {suffix: "Promise"});
 
 function getOutput (command) {
     try {
@@ -62,7 +62,7 @@ proGulp.task("uploadToS3", function () {
         Key: BUNDLE_NAME,
         Body: createReadStream("builds/" + BUNDLE_NAME)
     };
-    return s3.uploadAsync(params);
+    return s3.uploadPromise(params);
 });
 
 proGulp.task("updateLambda", function () {
@@ -82,9 +82,9 @@ proGulp.task("updateLambda", function () {
         S3Bucket: S3_BUCKET,
         S3Key: BUNDLE_NAME
     };
-    return lambda.createFunctionAsync(createParams)
+    return lambda.createFunctionPromise(createParams)
         .catch(function () {
-            return lambda.updateFunctionCodeAsync(updateParams);
+            return lambda.updateFunctionCodePromise(updateParams);
         });
 });
 
