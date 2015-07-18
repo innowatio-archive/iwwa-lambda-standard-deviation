@@ -22,6 +22,7 @@ settings:
 - `ARTIFACTS_KEY`: AWS access key id
 - `ARTIFACTS_SECRET`: AWS secret access key
 - `ARTIFACTS_BUCKET`: AWS S3 bucket name
+- `ARTIFACTS_S3_REGION`: AWS S3 bucket region
 - `FUNCTION_NAME`: AWS lambda function name
 
 **WARNING**: the value of those variables **must** be kept secret. **Do not**
