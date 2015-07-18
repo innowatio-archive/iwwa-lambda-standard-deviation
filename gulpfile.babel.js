@@ -9,8 +9,8 @@ import zip from "gulp-zip";
 import proGulp from "pro-gulp";
 import {Lambda, S3} from "aws-sdk";
 
-promisifyAll(Lambda, {suffix: "Promise"});
-promisifyAll(S3, {suffix: "Promise"});
+promisifyAll(Lambda.prototype, {suffix: "Promise"});
+promisifyAll(S3.prototype, {suffix: "Promise"});
 
 function getOutput (command) {
     try {
@@ -22,7 +22,7 @@ function getOutput (command) {
 
 var CURRENT_BRANCH = getOutput("git rev-parse --abbrev-ref HEAD");
 var CURRENT_COMMIT = getOutput("git rev-parse --short HEAD");
-var CURRENT_TAG = getOutput("git describe --abbrev=0 --tags");
+var CURRENT_TAG = getOutput("git describe --exact-match HEAD");
 var LAMBDA_HANDLER = "index.handler";
 var LAMBDA_NAME = process.env.LAMBDA_NAME;
 var LAMBDA_ROLE = process.env.LAMBDA_ROLE;
@@ -30,9 +30,9 @@ var S3_BUCKET = process.env.S3_BUCKET;
 
 var BUNDLE_NAME = [
     LAMBDA_NAME,
-    CURRENT_TAG && "_t_" + CURRENT_TAG,
-    "_b_" + CURRENT_BRANCH,
-    "_c_" + CURRENT_COMMIT,
+    CURRENT_TAG && "tag_" + CURRENT_TAG,
+    "branch_" + CURRENT_BRANCH,
+    "commit_" + CURRENT_COMMIT,
     "bundle.zip"
 ].filter(e => !!e).join("-");
 
@@ -60,7 +60,7 @@ proGulp.task("uploadToS3", function () {
     var params = {
         Bucket: S3_BUCKET,
         Key: BUNDLE_NAME,
-        Body: createReadStream("builds/" + BUNDLE_NAME)
+        Body: createReadStream("build/" + BUNDLE_NAME)
     };
     return s3.uploadPromise(params);
 });
