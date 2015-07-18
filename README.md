@@ -21,9 +21,10 @@ settings:
 
 - `ARTIFACTS_KEY`: AWS access key id
 - `ARTIFACTS_SECRET`: AWS secret access key
-- `ARTIFACTS_BUCKET`: AWS S3 bucket name
-- `ARTIFACTS_S3_REGION`: AWS S3 bucket region
-- `FUNCTION_NAME`: AWS lambda function name
+- `ARTIFACTS_BUCKET`: S3 bucket name
+- `ARTIFACTS_S3_REGION`: region of the S3 bucket
+- `ARTIFACTS_TARGET_PATHS`: target folder(s)
+- `FUNCTION_NAME`: lambda function name
 
 **WARNING**: the value of those variables **must** be kept secret. **Do not**
 set them in the `.travis.yml` config file, only in the Travis project's
