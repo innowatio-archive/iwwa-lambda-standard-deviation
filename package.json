@@ -4,6 +4,10 @@
   "version": "1.0.0",
   "description": "Standard deviation lambda",
   "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/innowation/iwwa-lambda-standard-deviation.git"
+  },
   "dependencies": {
     "aws-sdk": "^2.1.39",
     "bluebird": "^2.9.34",

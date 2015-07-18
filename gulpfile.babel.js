@@ -7,7 +7,7 @@ import zip from "gulp-zip";
 import proGulp from "pro-gulp";
 
 var FUNCTION_NAME = process.env.FUNCTION_NAME;
-var DESCRIPTION = "aaaa";// execSync("git describe");
+var DESCRIPTION = execSync("git describe");
 
 var bundleName = [FUNCTION_NAME, DESCRIPTION, "bundle.zip"].join("-");
 
