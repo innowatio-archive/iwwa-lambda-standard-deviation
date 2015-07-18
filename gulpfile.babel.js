@@ -59,7 +59,7 @@ proGulp.task("uploadToS3", function () {
         Key: BUNDLE_NAME,
         Body: createReadStream("build/" + BUNDLE_NAME)
     };
-    return promisify(s3.uploadPromise, s3)(params);
+    return promisify(s3.upload, s3)(params);
 });
 
 proGulp.task("updateLambda", function () {
