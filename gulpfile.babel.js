@@ -1,4 +1,4 @@
-import {promisifyAll} from "bluebird";
+import {promisify} from "bluebird";
 import {execSync} from "child_process";
 import {createReadStream} from "fs";
 import gulp from "gulp";
@@ -8,9 +8,6 @@ import mocha from "gulp-spawn-mocha";
 import zip from "gulp-zip";
 import proGulp from "pro-gulp";
 import {Lambda, S3} from "aws-sdk";
-
-promisifyAll(Lambda.prototype, {suffix: "Promise"});
-promisifyAll(S3.prototype, {suffix: "Promise"});
 
 function getOutput (command) {
     try {
@@ -62,7 +59,7 @@ proGulp.task("uploadToS3", function () {
         Key: BUNDLE_NAME,
         Body: createReadStream("build/" + BUNDLE_NAME)
     };
-    return s3.uploadPromise(params);
+    return promisify(s3.uploadPromise, s3)(params);
 });
 
 proGulp.task("updateLambda", function () {
@@ -82,9 +79,9 @@ proGulp.task("updateLambda", function () {
         S3Bucket: S3_BUCKET,
         S3Key: BUNDLE_NAME
     };
-    return lambda.createFunctionPromise(createParams)
+    return promisify(lambda.createFunction, lambda)(createParams)
         .catch(function () {
-            return lambda.updateFunctionCodePromise(updateParams);
+            return promisify(lambda.updateFunctionCode, lambda)(updateParams);
         });
 });
 
