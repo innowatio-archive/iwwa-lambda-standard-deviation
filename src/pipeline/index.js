@@ -19,7 +19,7 @@ import retrievePodReadings from "./retrieve-pod-readings";
 */
 
 export default function podReadingPipeline (reading) {
-    return BPromise
+    return BPromise.resolve()
         .then(partial(insertPodReading, reading))
         .then(partial(retrievePodReadings, reading))
         .then(partial(aggregate, reading));
