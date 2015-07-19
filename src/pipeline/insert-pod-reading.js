@@ -4,19 +4,14 @@ import dynamodb from "./common/dynamodb";
 
 export default function insertPodReading (reading) {
     return dynamodb.putItemAsync({
-        ExpressionAttributeNames: {
-            "#date": "date",
-            "#readingId": "readingId",
-            "#value": "value"
-        },
         Item: {
-            "#date": {
+            date: {
                 N: reading.date.toString()
             },
-            "#readingId": {
+            readingId: {
                 S: buildPodReadingKey(reading)
             },
-            "#value": {
+            value: {
                 N: reading.value.toString()
             }
         },

@@ -32,19 +32,14 @@ describe("insertPodReading", function () {
         };
         insertPodReading(podReading);
         expect(dynamodb.putItemAsync).to.have.been.calledWith({
-            ExpressionAttributeNames: {
-                "#date": "date",
-                "#readingId": "readingId",
-                "#value": "value"
-            },
             Item: {
-                "#date": {
+                date: {
                     N: "0"
                 },
-                "#readingId": {
+                readingId: {
                     S: "podId.0.attiva"
                 },
-                "#value": {
+                value: {
                     N: "50"
                 }
             },
