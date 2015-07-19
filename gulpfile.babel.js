@@ -9,46 +9,40 @@ import zip from "gulp-zip";
 import proGulp from "pro-gulp";
 import {Lambda, S3} from "aws-sdk";
 
-function getOutput (command) {
-    try {
-        return execSync(command).toString("utf8").trim();
-    } catch (ignore) {
-        return null;
-    }
-}
-
-var AWS_DEFAULT_REGION = process.env.AWS_DEFAULT_REGION;
-var CURRENT_BRANCH = getOutput("git rev-parse --abbrev-ref HEAD");
-var CURRENT_COMMIT = getOutput("git rev-parse --short HEAD");
-var CURRENT_TAG = getOutput("git describe --exact-match HEAD");
-var LAMBDA_HANDLER = "index.handler";
-var LAMBDA_NAME = process.env.LAMBDA_NAME;
-var LAMBDA_ROLE = process.env.LAMBDA_ROLE;
-var S3_BUCKET = process.env.S3_BUCKET;
+var AWS_DEFAULT_REGION  = process.env.AWS_DEFAULT_REGION;
+var TRAVIS_BRANCH       = process.env.TRAVIS_BRANCH;
+var TRAVIS_COMMIT       = process.env.TRAVIS_COMMIT;
+var TRAVIS_PULL_REQUEST = process.env.TRAVIS_PULL_REQUEST;
+var TRAVIS_TAG          = process.env.TRAVIS_TAG;
+var LAMBDA_HANDLER      = "index.handler";
+var LAMBDA_NAME         = process.env.LAMBDA_NAME;
+var LAMBDA_ROLE_ARN     = process.env.LAMBDA_ROLE_ARN;
+var S3_BUCKET           = process.env.S3_BUCKET;
 
 var BUNDLE_NAME = [
     LAMBDA_NAME,
-    CURRENT_TAG && "tag_" + CURRENT_TAG,
-    "branch_" + CURRENT_BRANCH,
-    "commit_" + CURRENT_COMMIT,
+    "branch_" + TRAVIS_BRANCH,
+    "commit_" + TRAVIS_COMMIT,
+    TRAVIS_TAG && "tag_" + TRAVIS_TAG,
+    TRAVIS_PULL_REQUEST !== "false" && "pr_" + TRAVIS_PULL_REQUEST,
     "bundle.zip"
 ].filter(e => !!e).join("-");
 
 proGulp.task("compile", function () {
     return gulp.src("src/**/*.js")
         .pipe(babel())
-        .pipe(gulp.dest("build/" + CURRENT_COMMIT + "/"));
+        .pipe(gulp.dest("build/" + TRAVIS_COMMIT + "/"));
 });
 
 proGulp.task("install", function () {
-    execSync("cp package.json build/" + CURRENT_COMMIT + "/package.json");
+    execSync("cp package.json build/" + TRAVIS_COMMIT + "/package.json");
     execSync("npm install --production", {
-        cwd: "build/" + CURRENT_COMMIT + "/"
+        cwd: "build/" + TRAVIS_COMMIT + "/"
     });
 });
 
 proGulp.task("bundle", function () {
-    return gulp.src("build/" + CURRENT_COMMIT + "/**/*")
+    return gulp.src("build/" + TRAVIS_COMMIT + "/**/*")
         .pipe(zip(BUNDLE_NAME))
         .pipe(gulp.dest("build/"));
 });
@@ -76,22 +70,25 @@ proGulp.task("updateLambda", function () {
         S3Bucket: S3_BUCKET,
         S3Key: BUNDLE_NAME
       },
-      FunctionName: LAMBDA_NAME + "_" + CURRENT_BRANCH,
+      FunctionName: LAMBDA_NAME + "_" + TRAVIS_BRANCH,
       Handler: LAMBDA_HANDLER,
-      Role: LAMBDA_ROLE,
+      Role: LAMBDA_ROLE_ARN,
       Runtime: "nodejs"
     };
     var updateParams = {
-        FunctionName: LAMBDA_NAME + "_" + CURRENT_BRANCH,
+        FunctionName: LAMBDA_NAME + "_" + TRAVIS_BRANCH,
         S3Bucket: S3_BUCKET,
         S3Key: BUNDLE_NAME
     };
     return promisify(lambda.createFunction, lambda)(createParams)
-        .catch(function () {
+        .catch(function (e) {
+            console.log("ERR");
+            console.log(e);
             return promisify(lambda.updateFunctionCode, lambda)(updateParams);
         });
 });
 
+gulp.task("updateLambda", proGulp.task("updateLambda"));
 gulp.task("deploy", proGulp.sequence([
     "compile",
     "install",

@@ -22,7 +22,7 @@ settings:
 - `AWS_ACCESS_KEY_ID`
 - `AWS_DEFAULT_REGION`
 - `AWS_SECRET_ACCESS_KEY`
-- `LAMBDA_ROLE`: IAM role to give the lambda function
+- `LAMBDA_ROLE_ARN`: ARN of the IAM role to give the lambda function
 - `LAMBDA_NAME`: lambda function name
 - `S3_BUCKET`
 
