@@ -39,10 +39,10 @@ describe("retrievePodReadings", function () {
             RequestItems: {
                 [TABLE_NAME]: {
                     Keys: [
-                        "podId.-1209600000.attiva",
-                        "podId.-604800000.attiva",
-                        "podId.604800000.attiva",
-                        "podId.1209600000.attiva"
+                        {readingId: {S: "podId.-1209600000.attiva"}},
+                        {readingId: {S: "podId.-604800000.attiva"}},
+                        {readingId: {S: "podId.604800000.attiva"}},
+                        {readingId: {S: "podId.1209600000.attiva"}}
                     ]
                 }
             }

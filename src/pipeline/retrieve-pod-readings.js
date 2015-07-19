@@ -16,7 +16,11 @@ export default function retrievePodReadings (reading) {
     return dynamodb.batchGetItemAsync({
         RequestItems: {
             [TABLE_NAME]: {
-                Keys: getNeighbouringPodReadingsKeys(reading)
+                Keys: getNeighbouringPodReadingsKeys(reading).map(key => ({
+                    readingId: {
+                        S: key
+                    }
+                }))
             }
         }
     });
